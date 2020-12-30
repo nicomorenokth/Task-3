@@ -1,0 +1,71 @@
+-- Show the number of instruments rented per month during a specified year
+SELECT (month, type_instrument)
+FROM instrument
+WHERE year = '2000';
+ 
+ -- The same as above, but retrieve the average number of rentals per month during the entire year.
+SELECT AVG(month)
+FROM instrument
+WHERE year = '2000';
+
+
+--Show the number of lessons given per month during a specified year.
+SELECT SUM(week_amount)
+FROM lesson
+WHERE year = '2001'
+
+--The specific number of individual lessons, group lessons and ensembles.
+
+SELECT SUM(group_lesson)
+FROM lesson
+WHERE year ='2001'
+
+SELECT SUM(individual_lesson)
+FROM lesson
+WHERE year = '2001
+
+SELECT SUM(ensembles)
+FROM lesson
+WHERE year = '2001'
+
+--Retrieve the average number of lessons per month
+SELECT AVG(week_amount)
+FROM lesson
+WHERE year = '2001'
+
+--List all instructors who has given more than a specific number of lessons 
+during the current month.
+SELECT id, given_lesson
+FROM instructor
+WHERE month = 'April'
+GROUP BY id, given_lesson
+HAVING(given_lesson) > 24;
+
+
+--List the three instructors having given most lessons during the last month, sorted by number of given lessons.
+SELECT id, given_lesson
+FROM instructor
+WHERE month = 'April'
+GROUP BY id, given_lesson
+ORDER BY given_lesson DESC
+LIMIT 3; 
+
+--List the three instruments with the lowest monthly rental fee. For each instrument tell whether it is rented or available to rent. 
+Also tell when the next group lesson for each listed instrument is scheduled.
+
+SELECT instrument_type, monthly_fee, available_instrument, next_group_lesson
+FROM instrument_fee 
+WHERE available_instrument > 0 
+GROUP BY instrument_type, monthly_fee, available_instrument, next_group_lesson
+ORDER BY monthly_fee ASC
+LIMIT 3;
+
+--List all ensembles held during the next week, sorted by music genre and weekday. For each ensemble tell whether it's full booked, 
+has 1-2 seats left or has more seats left.
+SELECT (id, available_bookings) 
+FROM ensembles 
+WHERE weekday = 'monday' AND genre = 'rock';
+
+SELECT(id, available_bookings) 
+FROM ensembles 
+WHERE weekday = 'friday' AND genre ='classical';
