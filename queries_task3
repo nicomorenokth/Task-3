@@ -1,0 +1,80 @@
+INSTRUMENTS
+--Show the number of instruments rented per month during a specified year
+
+SELECT rentsmonth as RentsPerMonth, instrument_type AS instrument
+FROM instrument_v2
+WHERE year = '2010'
+GROUP BY rentsmonth, instrument_type;
+
+--It shall be possible to retrieve the total number of rented instruments
+And rented instruments of each kind 
+
+SELECT SUM(rentsmonth) * 12 AS TotalRental
+FROM instrument_v2;
+
+SELECT AVG(rentsmonth) AS AverageRental
+FROM instrument_v2;
+
+
+LESSONS
+--Show the number of lessons given per month during a specified year, number of individual lessons, group lessons and ensembles.
+
+CREATE VIEW lesson_query AS
+SELECT SUM(week_amount) AS lesson_permonth,
+SUM (group_lesson) AS totalgrouplesson, 
+SUM (individual_lesson) AS totalindividuallesson, 
+SUM(ensembles) AS totalensembles
+FROM lesson
+WHERE year = '2001';
+
+
+--retrieve the average number of lessons per month
+
+CREATE VIEW average_lesson_query AS
+SELECT AVG(week_amount) AS lesson_permonth,
+SUM (group_lesson) AS totalgrouplesson, 
+SUM (individual_lesson) AS totalindividuallesson, 
+SUM(ensembles) AS totalensembles
+FROM lesson
+WHERE year = '2001';
+
+
+INSTRUCTOR
+--List all instructors who has given more than a specific number of lessons 
+during the current month.
+
+CREATE VIEW more_lesson AS
+SELECT id as instructor, given_lesson as given_lesson
+FROM instructor
+WHERE month = 'April'
+GROUP BY id, given_lesson
+HAVING(given_lesson) > 24;
+
+--List the three instructors having given most lessons during the last month, sorted by number of given lessons.
+
+CREATE VIEW most_lessons AS
+SELECT id AS instructor , given_lesson AS Lesson_given
+FROM instructor
+WHERE month = 'April'
+GROUP BY id, given_lesson
+ORDER BY given_lesson DESC
+LIMIT 3; 
+
+--Ensembles query:
+
+CREATE VIEW Ensembles_next_week AS
+SELECT id AS EnsembleGroup, weekday AS Weekday, genre AS Genre, available_bookings as BookingsAvailable
+FROM ensembles
+GROUP BY id, available_bookings;
+
+--List the three instruments with the lowest monthly rental fee. For each instrument tell whether it is rented or available to rent. 
+Also tell when the next group lesson for each listed instrument is scheduled.
+
+CREATE VIEW lowest_rental_fee AS
+SELECT instrument_type AS instrument, monthly_fee AS MonthlyFee, available_instrument AS AvailableStock, next_group_lesson AS Next_Group_Lesson
+FROM instrument_fee 
+WHERE available_instrument > 0 
+GROUP BY instrument_type, monthly_fee, available_instrument, next_group_lesson
+ORDER BY monthly_fee ASC
+LIMIT 3;
+
